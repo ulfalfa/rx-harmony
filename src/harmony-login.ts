@@ -2,6 +2,8 @@ import * as Debug from 'debug'
 
 const debug = Debug('rxharmony:login')
 import { Client, xml, jid } from '@xmpp/client'
+//
+import * as xmpp from 'node-xmpp-client'
 
 const JID = 'guest@x.com'
 const PASSWORD = 'guest'
@@ -51,10 +53,14 @@ function buildIqStanza(type, xmlns, mime, body, from) {
 }
 
 export async function pairHub(url: string): Promise<any> {
-    const xmppClient = new Client()
-
-    const _jid = jid('guest@x.com')
-    debug(_jid.toString())
+    const xmppClient = new xmpp({
+        jid: 'guest@x.com/gatorade',
+        password: 'guest',
+        host: '192.168.168.26',
+        port: 5222,
+        disallowTLS: true,
+        reconnect: true,
+    })
 
     let iqId
     const retPromise = new Promise((resolve, reject) => {
@@ -62,8 +68,8 @@ export async function pairHub(url: string): Promise<any> {
             debug('XMPP client connected')
         })
 
-        xmppClient.on('open', el => {
-            debug('XMPP client open', el.toString())
+        xmppClient.on('online', id => {
+            debug('XMPP client online', id)
             const iq = buildIqStanza(
                 'get',
                 'connect.logitech.com',
@@ -73,37 +79,11 @@ export async function pairHub(url: string): Promise<any> {
             )
 
             iqId = iq.attr('id')
-            //debug('IQ,id', iq.toString(), iqId)
-
-            // xmppClient.send(iq)
-        })
-
-        xmppClient.handle('authenticate', authenticate => {
-            debug('Authenticate')
-            return authenticate('guest@x.com', 'guest')
-                .then(data => {
-                    debug('Auth success', debug(xmppClient.openOptions))
-                    return data
-                })
-                .catch(e => {
-                    debug('Error auth', e)
-                })
-        })
-
-        xmppClient.on('online', id => {
-            debug('XMPP client online', id)
+            xmppClient.send(iq)
         })
 
         xmppClient.on('error', function(e) {
             debug('XMPP client error', e)
-        })
-
-        xmppClient.on('input', function(e) {
-            debug('XMPP input', e)
-        })
-
-        xmppClient.on('output', function(e) {
-            debug('XMPP output', e)
         })
 
         xmppClient.on('disconnect', function(what) {
@@ -114,10 +94,6 @@ export async function pairHub(url: string): Promise<any> {
         })
         xmppClient.on('reconnect', function(what) {
             debug('XMPP reconnect', what)
-        })
-
-        xmppClient.on('status', (...args) => {
-            debug(args)
         })
 
         xmppClient.on('stanza', stanza => {
@@ -138,14 +114,14 @@ export async function pairHub(url: string): Promise<any> {
             }
         })
     })
-    xmppClient
+    /*  xmppClient
         .start({ uri: url, domain: 'x.com' })
         .then(data => {
             debug('Finished', data)
         })
         .catch(data => {
             debug('Errored', data)
-        })
+        })*/
     return retPromise
 }
 
@@ -154,9 +130,8 @@ export function loginWithIdentity(url: string, identity: string) {
 
     const jid = identity + '@connect.logitech.com/gatorade'
     const password = identity
-    return new Promise((resolve, reject) => {
-        const xmppClient = new Client()
-
+    const xmppClient = new Client()
+    const myPromise = new Promise((resolve, reject) => {
         xmppClient.handle('authenticate', authenticate => {
             debug('Authenticate')
             return authenticate(jid, password)
@@ -170,11 +145,24 @@ export function loginWithIdentity(url: string, identity: string) {
                 })
         })
 
+        xmppClient.on('status', status => {
+            debug('Status', status)
+        })
+
+        xmppClient.on('input', input => {
+            debug('INput ', input.toString())
+        })
+
+        xmppClient.on('output', output => {
+            debug('OUTput ', output.toString())
+        })
+
         xmppClient.once('connect', () => {
             debug('XMPP client connected using identity token')
             resolve(xmppClient)
         })
-
-        xmppClient.start({ uri: url, timeout: 1000 })
+    })
+    return xmppClient.start({ uri: url }).then(() => {
+        return myPromise
     })
 }
