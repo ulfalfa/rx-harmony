@@ -14,6 +14,10 @@ On the one hand I'm experimenting with rxjs and the reactive coding style and on
 npm install rx-harmony
 ```
 
+## Docs
+
+The documentation is not finished (and probably will never be). The current version is [here](https://ulfalfa.github.io/rx-harmony/)!
+
 ## Usage
 
 ```javascript
@@ -48,7 +52,7 @@ setTimeout(
 As `swissmanu`'s library `rx-harmony` uses [debug](https://github.com/visionmedia/debug) for generating traces. Activate them by setting the`DEBUG` environment variable:
 
 ```bash
-$ DEBUG=rx-harmony:* node myapp.js
+$ DEBUG=rxharmony:* node myapp.js
 ```
 
 ## License
