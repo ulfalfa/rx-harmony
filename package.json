@@ -1,6 +1,6 @@
 {
   "name": "rx-harmonyhub",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "a reactive logitech harmony library",
   "main": "dist/index",
   "author": "ulfalfa",
