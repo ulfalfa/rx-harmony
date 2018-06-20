@@ -1,1 +1,7 @@
 src
+build
+tslint.json
+nodemon.json
+typedoc.json
+tsconfig.json
+
