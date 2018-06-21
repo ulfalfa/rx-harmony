@@ -21,9 +21,9 @@ import {
     never,
 } from 'rxjs';
 
-import { switchMap, mergeMap, map, groupBy } from 'rxjs/operators';
+import { switchMap, mergeMap, map, groupBy, filter } from 'rxjs/operators';
 
-import { HarmonyHub } from './harmony-hub.class';
+import { HarmonyHub, ActivityStatus, IHubEvent } from './harmony-hub.class';
 import {
     HarmonyDiscover,
     IDiscoverDigest,
@@ -31,21 +31,64 @@ import {
     HarmonyHubState,
 } from './harmony-discover.class';
 
-export interface IHarmonyEvent {
-    friendlyName: string;
-    id: string;
+export interface IHarmonySimpleStatus {
     label: string;
-    status: number;
-    from: string;
-    fromLabel: string;
+    active: boolean;
+    friendlyName: string;
 }
 export namespace HarmonyOperators {
+    export function humanizeStatus(): OperatorFunction<
+        IHubEvent,
+        IHarmonySimpleStatus
+    > {
+        return (
+            source: Observable<IHubEvent>
+        ): Observable<IHarmonySimpleStatus> => {
+            return source.pipe(
+                filter(
+                    event =>
+                        !(
+                            (event.activityStatus === ActivityStatus.Off &&
+                                event.runningActivityList) ||
+                            (event.activityStatus === ActivityStatus.Running &&
+                                event.runningActivityListLabel ===
+                                    event.activityLabel)
+                        )
+                ),
+                map((event: IHubEvent) => {
+                    const r = {
+                        active: true,
+                        label: '',
+                        friendlyName: event.friendlyName,
+                    };
+                    switch (event.activityStatus) {
+                        case ActivityStatus.Off:
+                            r.active = true;
+                            r.label = event.activityLabel;
+                            break;
+                        case ActivityStatus.Starting:
+                            r.active = false;
+                            r.label =
+                                event.runningActivityListLabel || 'PowerOff';
+                            break;
+                        case ActivityStatus.Running:
+                            r.active = true;
+                            r.label = event.activityLabel;
+                            break;
+                        case ActivityStatus.Stopping:
+                            r.active = false;
+                            r.label = event.activityLabel;
+                    }
+                    return r;
+                })
+            );
+        };
+    }
+
     export function observeDiscoveredHubs(
         on?: (info: IDiscoverDigest, hub: HarmonyHub) => void
-    ): OperatorFunction<IDiscoverDigest, IHarmonyEvent> {
-        return (
-            source: Observable<IDiscoverDigest>
-        ): Observable<IHarmonyEvent> => {
+    ): OperatorFunction<IDiscoverDigest, IHubEvent> {
+        return (source: Observable<IDiscoverDigest>): Observable<IHubEvent> => {
             return source.pipe(
                 groupBy(info => info.ip),
                 mergeMap((infoByIp: Observable<IDiscoverDigest>) => {
@@ -71,25 +114,9 @@ export namespace HarmonyOperators {
                                     (hub: HarmonyHub) => {
                                         return hub.observe().pipe(
                                             map(event => {
-                                                const activity = hub.resolveActivity(
-                                                    event.activityId
-                                                );
-                                                const from = hub.resolveActivity(
-                                                    event.runningActivityList
-                                                );
-                                                return {
-                                                    friendlyName:
-                                                        info.friendlyName,
-                                                    id: event.activityId,
-                                                    label: activity.label,
-                                                    status:
-                                                        event.activityStatus,
-                                                    from:
-                                                        event.runningActivityList,
-                                                    fromLabel: from
-                                                        ? from.label
-                                                        : undefined,
-                                                };
+                                                event.friendlyName =
+                                                    info.friendlyName;
+                                                return event;
                                             })
                                         );
                                     }
@@ -111,7 +138,7 @@ export namespace HarmonyOperators {
 export function observeAll(
     on?: (info: IDiscoverDigest, hub: HarmonyHub) => void,
     opts?: IDiscoverOptions
-) {
+): Observable<IHubEvent> {
     return HarmonyDiscover.observe(opts).pipe(
         HarmonyOperators.observeDiscoveredHubs(on)
     );

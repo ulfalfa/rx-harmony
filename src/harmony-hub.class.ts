@@ -44,7 +44,7 @@ import {
  */
 const debug = Debug('rxharmony:hub');
 
-export enum IActivityStatus {
+export enum ActivityStatus {
 	Off = 0,
 	Starting = 1,
 	Running = 2,
@@ -54,7 +54,7 @@ export enum IActivityStatus {
 /**
  * event of the hub e.g. in case of activity switching
  */
-export interface IHubEvent {
+export interface IHubDigest {
 	sleepTimerId: number;
 	runningZoneList: any[];
 	configVersion: number;
@@ -71,7 +71,7 @@ export interface IHubEvent {
 	contentVersion: number;
 	wifiStatus: number;
 	discoveryServer: string;
-	activityStatus: IActivityStatus;
+	activityStatus: ActivityStatus;
 	runningActivityList: string;
 	tz: string;
 	activitySetupState: boolean;
@@ -79,6 +79,11 @@ export interface IHubEvent {
 	hubUpdate: boolean;
 	sequence: boolean;
 	accountId: string;
+}
+export interface IHubEvent extends IHubDigest {
+	friendlyName?: string;
+	activityLabel: string;
+	runningActivityListLabel: string;
 }
 /**
  * harmony hubs configuration information when retrieving
@@ -217,6 +222,11 @@ export class HarmonyHub implements SubscriptionLike {
 		return this._activities.get(idOrLabel.toLowerCase());
 	}
 
+	public getLabel(activityId: string): string {
+		const activity = this._activities.get(activityId.toLowerCase());
+		return activity ? activity.label : undefined;
+	}
+
 	public observe(): Observable<IHubEvent> {
 		return this._client$.pipe(
 			tap(() => this.getConfig()),
@@ -230,7 +240,15 @@ export class HarmonyHub implements SubscriptionLike {
 				}
 				return false;
 			}),
-			map((event: any) => JSON.parse(event.getText()))
+			map((event: any) => JSON.parse(event.getText())),
+			map((event: IHubEvent) => {
+				event.activityLabel = this.getLabel(event.activityId);
+				event.runningActivityListLabel = this.getLabel(
+					event.runningActivityList
+				);
+
+				return event;
+			})
 		);
 	}
 
