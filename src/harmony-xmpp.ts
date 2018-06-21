@@ -11,7 +11,7 @@ import { URL } from 'url';
 const debug = Debug('rxharmony:xmpp');
 
 import * as xmpp from 'node-xmpp-client';
-import { IQ } from 'node-xmpp-stanza';
+import { IQ } from '@xmpp/xml';
 
 const JID = 'guest@x.com/gatorade';
 const PASSWORD = 'guest';
@@ -22,11 +22,7 @@ import {
     IHarmonyHubInfo,
 } from './harmony.types';
 
-import {
-    encodeRequest,
-    decodeResponse,
-    IHarmonyRequest,
-} from './harmony-utils';
+import { encodeRequest, decodeResponse, IHarmonyRequest } from './harmony-utils';
 
 export function getUniqueId(): string {
     return Math.floor(Math.random() * 1000000).toString();

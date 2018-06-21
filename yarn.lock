@@ -372,7 +372,7 @@
     inherits "^2.0.3"
     ltx "^2.5.0"
 
-"@xmpp/xml@^0.1.3":
+"@xmpp/xml@0.1.3", "@xmpp/xml@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@xmpp/xml/-/xml-0.1.3.tgz#1f14399e53e419688558698f6c62e71e39a86a6e"
   dependencies:
@@ -2873,7 +2873,7 @@ lru-cache@^4.0.0, lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-ltx@^2.3.0, ltx@^2.5.0, ltx@^2.6.2:
+ltx@^2.5.0, ltx@^2.6.2:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/ltx/-/ltx-2.7.1.tgz#0e5cbdcb5bf178cfa7831ea41dc323d97422315a"
   dependencies:
@@ -3195,13 +3195,6 @@ node-xmpp-core@^5.0.9:
     lodash.assign "^4.0.0"
     node-xmpp-tls-connect "^1.0.1"
     reconnect-core "https://github.com/dodo/reconnect-core/tarball/merged"
-
-node-xmpp-stanza@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/node-xmpp-stanza/-/node-xmpp-stanza-1.1.1.tgz#14a9edb57fff9df6195979472efdf0c1b06d7e3a"
-  dependencies:
-    inherits "^2.0.1"
-    ltx "^2.3.0"
 
 node-xmpp-tls-connect@^1.0.1:
   version "1.0.1"
