@@ -26,26 +26,17 @@
   },
   "ava": {
     "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
+    "extensions": ["ts"],
+    "require": ["ts-node/register"]
   },
   "nyc": {
-    "exclude": [
-      "**/*.js",
-      "**/*.d.ts",
-      "**/*.spec.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "reporter": [
-      "html",
-      "text"
-    ],
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "exclude": ["**/*.js", "**/*.d.ts", "**/*.spec.ts"],
+    "extension": [".ts"],
+    "reporter": ["html", "text"],
     "cache": true,
     "sourceMap": true,
     "instrument": true,

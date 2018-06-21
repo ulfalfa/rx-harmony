@@ -4,7 +4,7 @@
 
 It is inspired and heavily basend upon [@swissmanu](https://github.com/swissmanu/harmonyhubjs-client) `harmonyhubsjs-client` and `harmonyhubjs-discover`.
 
-## Why I wrote thies library
+## Why I wrote this library
 
 On the one hand I'm experimenting with rxjs and the reactive coding style and on the other hand I missed a combination out of both librarys and a more robust error handling, a retry mechanism. Additionally I'm currently in love with typescript.
 
@@ -46,6 +46,11 @@ setTimeout(
     5000
 )
 ```
+
+## TODOS
+
+-   extend test coverage
+-   write documentation
 
 ## Debug Traces
 
