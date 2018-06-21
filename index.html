@@ -65,11 +65,13 @@
 				<h1 id="rx-harmonyhub">rx-harmonyhub</h1>
 				<p><code>rx-harmonyhub</code> is a reactive class library for node.js which allows to interact with your Logitech Harmony hubs.</p>
 				<p>It is inspired and heavily basend upon <a href="https://github.com/swissmanu/harmonyhubjs-client">@swissmanu</a> <code>harmonyhubsjs-client</code> and <code>harmonyhubjs-discover</code>.</p>
-				<h2 id="why-i-wrote-thies-library">Why I wrote thies library</h2>
+				<h2 id="why-i-wrote-this-library">Why I wrote this library</h2>
 				<p>On the one hand I&#39;m experimenting with rxjs and the reactive coding style and on the other hand I missed a combination out of both librarys and a more robust error handling, a retry mechanism. Additionally I&#39;m currently in love with typescript.</p>
 				<h2 id="installation">Installation</h2>
 				<pre><code class="lang-bash">npm install rx-harmony
 </code></pre>
+				<h2 id="docs">Docs</h2>
+				<p>The documentation is not finished (and probably will never be). The current version is <a href="https://ulfalfa.github.io/rx-harmony/">here</a>!</p>
 				<h2 id="usage">Usage</h2>
 				<pre><code class="lang-javascript"><span class="hljs-comment">// first create a connection to a hub</span>
 <span class="hljs-keyword">const</span> hub = <span class="hljs-keyword">new</span> HarmonyHub(<span class="hljs-string">'xmpp://192.168.168.26'</span>, <span class="hljs-number">5000</span>)
@@ -96,9 +98,14 @@ setTimeout(
     <span class="hljs-number">5000</span>
 )
 </code></pre>
+				<h2 id="todos">TODOS</h2>
+				<ul>
+					<li>extend test coverage</li>
+					<li>write documentation</li>
+				</ul>
 				<h2 id="debug-traces">Debug Traces</h2>
 				<p>As <code>swissmanu</code>&#39;s library <code>rx-harmony</code> uses <a href="https://github.com/visionmedia/debug">debug</a> for generating traces. Activate them by setting the<code>DEBUG</code> environment variable:</p>
-				<pre><code class="lang-bash">$ DEBUG=rx-harmony:* node myapp.js
+				<pre><code class="lang-bash">$ DEBUG=rxharmony:* node myapp.js
 </code></pre>
 				<h2 id="license">License</h2>
 				<p>Copyright (c) 2018 Ulf Steinberg</p>
