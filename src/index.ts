@@ -1,3 +1,5 @@
 export * from './harmony.types'
 export * from './harmony-discover.class'
 export * from './harmony-hub.class'
+export * from './harmony-universe'
+export * from './harmony.types'
